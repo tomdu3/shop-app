@@ -71,4 +71,6 @@ class User:
         return self.session_id is not None
 
     def is_admin(self) -> bool:
-        return self.user_type == UserType.ADMIN
+        return self.user_type == UserType.admin
+
+
