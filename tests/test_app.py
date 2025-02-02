@@ -40,6 +40,9 @@ def test_admin_user(admin_user):
 
 # Test User methods
 def test_user_methods(regular_user):
+    """
+    Test User methods on regular_user
+    """
     assert regular_user.login(PASSWORD)
     assert regular_user.is_authenticated()
     assert regular_user.is_admin() == False
@@ -48,3 +51,14 @@ def test_user_methods(regular_user):
     # check if user logged out
     regular_user.logout() 
     assert regular_user.is_authenticated() == False
+
+def test_admin_methods(admin_user):
+    """
+    Test User methods on admin_user
+    """
+    assert admin_user.login(ADMIN_PASSWORD)
+    assert admin_user.is_authenticated()
+    assert admin_user.is_admin()
+    assert admin_user.session_id is not None
+
+
