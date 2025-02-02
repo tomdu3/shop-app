@@ -26,3 +26,16 @@ def test_user_initialization(regular_user):
     assert regular_user.password == PASSWORD
     assert regular_user.user_type == UserType.user
     assert regular_user.session_id is None
+
+# Test cases for UserType and User class
+def test_admin_user(admin_user):
+    """
+    Test correct creation of an admin User object.
+    """
+
+    assert admin_user.username == ADMIN_USERNAME
+    assert admin_user.password == ADMIN_PASSWORD
+    assert admin_user.user_type == UserType.admin
+    assert admin_user.session_id is None
+
+
