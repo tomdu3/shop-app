@@ -93,8 +93,8 @@ class UserManager:
         Generates a dictionary of users on initialization and if the User is passed as an argument (optional), it will be added as a current_user, otherwise is None.
         """
         self.users: Dict[str, User] = {
-            "user": User("user", "pass123", UserType.REGULAR),
-            "admin": User("admin", "admin123", UserType.ADMIN)
+            "user": User("user", "pass123", UserType.user),
+            "admin": User("admin", "admin123", UserType.admin)
         }
         self.current_user: Optional[User] = None
 

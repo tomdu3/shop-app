@@ -1,5 +1,5 @@
 import pytest
-from ..app import UserType, User
+from ..app import UserType, User, UserManager
 
 # Test data
 USERNAME = "test_user"
@@ -61,4 +61,25 @@ def test_admin_methods(admin_user):
     assert admin_user.is_admin()
     assert admin_user.session_id is not None
 
+# Test data
+NEW_USER = "new_user"
+NEW_PASSWORD = "new_password"
+ADMIN_USER = "admin_user" 
+ADMIN_PASSWORD = "admin_password"
+REGULAR_USER = "user"
+REGULAR_PASSWORD = "pass123"
 
+@pytest.fixture
+def user_manager():
+    return UserManager()
+
+def test_register_and_login_new_user(user_manager):
+    """
+    Test registering and logging in a new regular user
+    """
+    assert user_manager.register(NEW_USER, NEW_PASSWORD, UserType.user)
+    assert user_manager.login(REGULAR_USER, REGULAR_PASSWORD)
+    assert user_manager.current_user.is_authenticated()
+    assert user_manager.current_user.is_admin() == False
+    user_manager.logout()
+    assert user_manager.current_user == None
