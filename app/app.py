@@ -140,3 +140,16 @@ class UserManager:
             return False
         self.users[username] = User(username, password, user_type)
         return True
+
+
+class Category:
+    def __init__(self, id: int, name: str):
+        self.id = id
+        self.name = name
+
+class Product:
+    def __init__(self, id: int, name: str, category_id: int, price: float):
+        self.id = id
+        self.name = name
+        self.category_id = category_id
+        self.price = price
