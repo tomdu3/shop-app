@@ -1,5 +1,12 @@
 import pytest
-from ..app import UserType, User, UserManager, Category, Product
+from ..app import (
+    UserType,
+    User,
+    UserManager,
+    Category,
+    Product,
+    ProductManager,
+)
 
 # Test data
 USERNAME = "test_user"
@@ -109,3 +116,43 @@ def test_category_and_product():
     assert product.name == "Laptop"
     assert product.price == 999.99
     assert product.category_id == category.id
+
+
+# Test ProductManager class and methods
+
+def test_product_manager():
+    """
+    Test ProductManager class and its methods
+    """
+    # add product
+    product_manager = ProductManager()
+    category = product_manager.add_category("Electronics")
+    product = product_manager.add_product("Laptop", category.id, 999.99)
+    assert product.name == "Laptop"
+    assert product.price == 999.99
+    assert product.category_id == category.id
+    
+    # update product
+    product_manager.update_product(product.id, name="Updated Laptop", price=999.99)
+    product = product_manager.products[product.id]
+    assert product.name == "Updated Laptop"
+    assert product.price == 999.99
+    assert product.category_id == category.id
+
+    # remove product
+    product_manager.remove_product(product.id)
+    assert product.id not in product_manager.products
+    # remove category
+    product_manager.remove_category(category.id)
+    assert category.id not in product_manager.categories
+
+    # remove category that is in use
+    category = product_manager.remove_category(1)  # remove Shoes
+    assert category is False  # category is in use if False
+
+    # remove product that is in use
+    product = product_manager.remove_product(1)  # remove Shoes
+    assert product is True  # product removed if True
+    # remove category with all products removed
+    category = product_manager.remove_category(1) 
+    assert category is True  # category removed if True
