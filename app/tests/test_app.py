@@ -86,3 +86,15 @@ def test_register_and_login_new_user(user_manager):
     user_manager.logout()
     assert user_manager.current_user == None
 
+def test_register_and_login_admin_user(user_manager):
+    """
+    Test registering and logging in a new admin user
+    """
+    assert user_manager.register(ADMIN_USER, ADMIN_PASSWORD, UserType.admin)
+    assert user_manager.login(ADMIN_USER, ADMIN_PASSWORD)
+    assert user_manager.current_user.is_authenticated()
+    assert user_manager.current_user.username == ADMIN_USER
+    assert user_manager.current_user.user_type == UserType.admin
+    assert user_manager.current_user.is_admin()
+    user_manager.logout()
+    assert user_manager.current_user == None
