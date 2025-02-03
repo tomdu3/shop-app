@@ -1,5 +1,5 @@
 import pytest
-from shop_app.app import UserType, User
+from ..app import UserType, User
 
 # Test data
 USERNAME = "test_user"
