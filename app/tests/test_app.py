@@ -80,6 +80,9 @@ def test_register_and_login_new_user(user_manager):
     assert user_manager.register(NEW_USER, NEW_PASSWORD, UserType.user)
     assert user_manager.login(REGULAR_USER, REGULAR_PASSWORD)
     assert user_manager.current_user.is_authenticated()
+    assert user_manager.current_user.username == REGULAR_USER
+    assert user_manager.current_user.user_type == UserType.user
     assert user_manager.current_user.is_admin() == False
     user_manager.logout()
     assert user_manager.current_user == None
+
