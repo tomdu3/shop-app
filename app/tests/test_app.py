@@ -1,5 +1,5 @@
 import pytest
-from ..app import UserType, User, UserManager
+from ..app import UserType, User, UserManager, Category, Product
 
 # Test data
 USERNAME = "test_user"
@@ -98,3 +98,14 @@ def test_register_and_login_admin_user(user_manager):
     assert user_manager.current_user.is_admin()
     user_manager.logout()
     assert user_manager.current_user == None
+
+# Test Category and Product classes
+def test_category_and_product():
+    """
+    Test Category and Product classes
+    """
+    category = Category(1, "Electronics")
+    product = Product(1, "Laptop", category.id, 999.99)
+    assert product.name == "Laptop"
+    assert product.price == 999.99
+    assert product.category_id == category.id
