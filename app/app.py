@@ -73,6 +73,7 @@ class User:
     def is_admin(self) -> bool:
         return self.user_type == UserType.admin
 
+
 class UserManager:
     """
     Manages the user authentication.
@@ -153,6 +154,7 @@ class Category:
     def __init__(self, id: int, name: str):
         self.id = id
         self.name = name
+
 
 class Product:
     """
@@ -261,7 +263,6 @@ class ProductManager:
         del self.products[product_id]
         return True
     
-
     def add_category(self, name: str) -> Optional[Category]:
         """
         Adds a new category with the provided name.
@@ -295,3 +296,96 @@ class ProductManager:
                 return False
         del self.categories[category_id]
         return True
+
+
+class CartItem:
+    """
+    CartItem class.
+
+    Attributes:
+        product (Product): The product in the cart.
+        quantity (int): The quantity of the product in the cart.
+        subtotal (float): The subtotal of the product in the cart.
+    """
+    def __init__(self, product: Product, quantity: int):
+        self.product = product
+        self.quantity = quantity
+
+    @property  # make subtotal method a read-only property
+    def subtotal(self) -> float:
+        return self.product.price * self.quantity
+
+
+class Cart:
+    """
+    Cart class.
+
+    Attributes:
+        items (Dict[int, CartItem]): A dictionary of cart items. Empty at initialization.
+
+    Methods:
+        add_item(product, quantity): Adds a new item to the cart with the provided product and quantity.
+        remove_item(product_id): Removes the item with the provided product_id from the cart.
+        get_total(): Calculates and returns the total price of all items in the cart.
+        clear(): Clears the cart by removing all items.
+    """
+    def __init__(self):
+        self.items: Dict[int, CartItem] = {}
+
+    def add_item(self, product: Product, quantity: int):
+        """
+        Adds a new item to the cart with the provided product and quantity.
+
+        Args:
+            product (Product): The product to add to the cart.
+            quantity (int): The quantity of the product to add to the cart.
+        """
+
+        if quantity <= 0:
+            raise ValueError("Quantity must be greater than 0")
+        if product.id in self.items:
+            self.items[product.id].quantity += quantity
+        else:
+            self.items[product.id] = CartItem(product, quantity)
+
+    def remove_item(self, product_id: int):
+        """
+        Removes the item with the provided product_id from the cart.
+
+        Args:
+            product_id (int): The ID of the product to remove from the cart.
+        """
+        if product_id not in self.items:
+            raise ValueError("Product not in cart")
+        if product_id in self.items:
+            del self.items[product_id]
+    
+    def update_item(self, product_id: int, quantity: int):
+        """
+        Updates the quantity of the item with the provided product_id in the cart.
+
+        Args:
+            product_id (int): The ID of the product to update in the cart.
+            quantity (int): The new quantity of the product in the cart.
+        """
+        if product_id not in self.items:
+            raise ValueError("Product not in cart")
+        if quantity < 0:
+            raise ValueError("Quantity must not be negative")
+        if product_id in self.items:
+            if quantity == 0:
+                del self.items[product_id]
+                return
+            self.items[product_id].quantity = quantity
+
+    def get_total(self) -> float:
+        """
+        Calculates and returns the total price of all items in the cart.
+        """
+        return sum(item.subtotal for item in self.items.values())
+
+    def clear(self):
+        """
+        Clears the cart by removing all items.
+        """
+        self.items.clear()
