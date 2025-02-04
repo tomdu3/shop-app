@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.7, pytest-8.3.2, pluggy-1.5.0 -- /home/tom/projects/e-commerce/venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.12.7', 'Platform': 'Linux-6.13.1-zen1-1-zen-x86_64-with-glibc2.41', 'Packages': {'pytest': '8.3.2', 'pluggy': '1.5.0'}, 'Plugins': {'variables': '3.1.0', 'metadata': '3.1.1', 'django': '4.9.0', 'base-url': '2.1.0', 'Faker': '28.4.1', 'html': '4.1.1', 'factoryboy': '2.7.0', 'selenium': '4.1.0'}, 'Base URL': '', 'Driver': None, 'Capabilities': {}}
+django: version: 5.1.1
+sensitiveurl: .*
+rootdir: /home/tom/projects/shop_app
+plugins: variables-3.1.0, metadata-3.1.1, django-4.9.0, base-url-2.1.0, Faker-28.4.1, html-4.1.1, factoryboy-2.7.0, selenium-4.1.0
+collecting ... collected 15 items
+
+app/tests/test_app.py::test_user_initialization PASSED                   [  6%]
+app/tests/test_app.py::test_admin_user PASSED                            [ 13%]
+app/tests/test_app.py::test_user_methods PASSED                          [ 20%]
+app/tests/test_app.py::test_admin_methods PASSED                         [ 26%]
+app/tests/test_app.py::test_category_and_product PASSED                  [ 33%]
+app/tests/test_app.py::test_cart PASSED                                  [ 40%]
+app/tests/test_app.py::test_payment_method_enum PASSED                   [ 46%]
+app/tests/test_app.py::test_payment_initialization PASSED                [ 53%]
+app/tests/test_app.py::test_payment_processing PASSED                    [ 60%]
+app/tests/test_app.py::test_payment_with_different_methods PASSED        [ 66%]
+app/tests/test_app.py::test_shopping_app_initialization PASSED           [ 73%]
+app/tests/test_app.py::test_login_logout PASSED                          [ 80%]
+app/tests/test_app.py::test_privilege_checks PASSED                      [ 86%]
+app/tests/test_app.py::test_cart_operations PASSED                       [ 93%]
+app/tests/test_app.py::test_checkout PASSED                              [100%]
+
+============================== 15 passed in 0.05s ==============================
