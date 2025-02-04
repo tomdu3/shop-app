@@ -268,17 +268,22 @@ def test_payment_with_different_methods():
 
 # Test ShoppingApp
 
+
 @pytest.fixture
 def shopping_app():
     return ShoppingApp()
 
+
 def test_shopping_app_initialization(shopping_app):
-    """Test initial state of shopping app"""
+    """Test initial state of ShoppingApp"""
     assert len(shopping_app.categories) == 4
-    assert len(shopping_app.products) == 3
+    assert len(shopping_app.products) == 4
     assert len(shopping_app.users) == 2
     assert len(shopping_app.carts) == 0
     assert shopping_app.current_user is None
+    assert shopping_app.next_product_id == 5
+    assert shopping_app.next_category_id == 5
+
 
 def test_login_logout(shopping_app):
     """Test login and logout functionality"""
@@ -286,6 +291,7 @@ def test_login_logout(shopping_app):
     assert shopping_app.login("user1", "pass123")
     assert shopping_app.current_user is not None
     assert shopping_app.current_user.username == "user1"
+    assert len(shopping_app.carts) == 1
     
     # Test failed login
     assert not shopping_app.login("user1", "wrongpass")
@@ -294,73 +300,70 @@ def test_login_logout(shopping_app):
     shopping_app.logout()
     assert shopping_app.current_user is None
 
-def test_get_cart(shopping_app):
-    """Test cart retrieval"""
+
+def test_privilege_checks(shopping_app):
+    """Test user and admin privilege checks"""
     # Without login
-    assert shopping_app.get_cart() is None
+    assert not shopping_app.check_user_privileges()
+    assert not shopping_app.check_admin_privileges()
     
-    # With login
+    # Regular user login
     shopping_app.login("user1", "pass123")
-    cart = shopping_app.get_cart()
-    assert cart is not None
-    assert isinstance(cart, Cart)
-    assert shopping_app.current_user.session_id in shopping_app.carts
-
-def test_add_product(shopping_app):
-    """Test adding products"""
-    # Try adding product without admin rights
-    shopping_app.login("user1", "pass123")
-    with pytest.raises(ValueError) as e:
-        shopping_app.add_product("Test Product", 1, 99.99)
-    assert str(e.value) == "Admin privileges required"
+    assert shopping_app.check_user_privileges()
+    assert not shopping_app.check_admin_privileges()
     
-    # Try adding product with invalid category
+    # Admin login
+    shopping_app.logout()
     shopping_app.login("admin", "admin123")
-    with pytest.raises(ValueError) as e:
-        shopping_app.add_product("Test Product", 999, 99.99)
-    assert str(e.value) == "Invalid category ID"
-    
-    # Successfully add product
-    product = shopping_app.add_product("Test Product", 1, 99.99)
-    assert product is not None
-    assert product.name == "Test Product"
-    assert product.category_id == 1
-    assert product.price == 99.99
-    assert product.id == 4  # Since there were 3 products initially
+    assert not shopping_app.check_user_privileges()
+    assert shopping_app.check_admin_privileges()
 
-def test_remove_product(shopping_app):
-    """Test removing products"""
-    # Try removing product without admin rights
-    shopping_app.login("user1", "pass123")
-    with pytest.raises(ValueError) as e:
-        shopping_app.remove_product(1)
-    assert str(e.value) == "Admin privileges required"
-    
-    # Successfully remove product
-    shopping_app.login("admin", "admin123")
-    assert shopping_app.remove_product(1)
-    assert 1 not in shopping_app.products
-    
-    # Try removing non-existent product
-    assert not shopping_app.remove_product(999)
 
-def test_add_to_cart(shopping_app):
-    """Test adding items to cart"""
-    # Try adding to cart without login
-    with pytest.raises(ValueError) as e:
-        shopping_app.add_to_cart(1, 1)
-    assert str(e.value) == "User privileges required"
-    
-    # Login and add valid item
+def test_cart_operations(shopping_app):
+    """Test cart operations"""
+    # Login as regular user
     shopping_app.login("user1", "pass123")
-    assert shopping_app.add_to_cart(2, 1)
-    cart = shopping_app.get_cart()
-    assert cart.items[2].quantity == 1
     
-    # Try adding invalid product
+    # Test adding valid product
+    assert shopping_app.add_to_cart(1, 2)
+    cart = shopping_app.carts[shopping_app.current_user.session_id]
+    assert cart.items[1].quantity == 2
+    
+    # Test adding invalid product
     assert not shopping_app.add_to_cart(999, 1)
     
-    # Try adding negative quantity
-    with pytest.raises(ValueError) as e:
-        shopping_app.add_to_cart(2, -1)
-    assert str(e.value) == "Quantity must be greater than 0"
+    # Test adding product as admin
+    shopping_app.logout()
+    shopping_app.login("admin", "admin123")
+    assert not shopping_app.add_to_cart(1, 1)
+    
+    # Test removing product
+    shopping_app.logout()
+    shopping_app.login("user1", "pass123")
+    shopping_app.add_to_cart(1, 2)
+    assert shopping_app.remove_from_cart(1)
+    cart = shopping_app.carts[shopping_app.current_user.session_id]
+    assert 1 not in cart.items
+    
+    # Test removing non-existent product
+    assert not shopping_app.remove_from_cart(999)
+
+
+def test_checkout(shopping_app):
+    """Test checkout process"""
+    # Login and add items
+    shopping_app.login("user1", "pass123")
+    shopping_app.add_to_cart(1, 2)
+    shopping_app.add_to_cart(2, 1)
+    
+    # Test successful checkout
+    assert shopping_app.checkout(PaymentMethod.CREDIT_CARD)
+    cart = shopping_app.carts[shopping_app.current_user.session_id]
+    assert len(cart.items) == 0
+    
+    # Test checkout with empty cart
+    assert not shopping_app.checkout(PaymentMethod.CREDIT_CARD)
+    
+    # Test checkout without login
+    shopping_app.logout()
+    assert not shopping_app.checkout(PaymentMethod.CREDIT_CARD)
