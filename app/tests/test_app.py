@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from ..app import (
     UserType,
     User,
@@ -6,8 +7,10 @@ from ..app import (
     Category,
     Product,
     ProductManager,
-    CartItem,
+    CartItem,  # NOQA
     Cart,
+    PaymentMethod,
+    Payment,
 )
 
 # Test data
@@ -211,3 +214,53 @@ def test_cart():
 
     # Optional: Check the error message
     assert str(context.value) == "Quantity must not be negative"
+
+
+
+def test_payment_method_enum():
+    """
+    Test PaymentMethod enum values
+    """
+    assert PaymentMethod.CREDIT_CARD.value == "Credit Card"
+    assert PaymentMethod.DEBIT_CARD.value == "Debit Card" 
+    assert PaymentMethod.UPI.value == "UPI"
+    assert PaymentMethod.NET_BANKING.value == "Net Banking"
+    assert PaymentMethod.PAYPAL.value == "PayPal"
+
+def test_payment_initialization():
+    """
+    Test Payment class initialization
+    """
+    payment = Payment(100.0, PaymentMethod.CREDIT_CARD)
+    assert payment.amount == 100.0
+    assert payment.method == PaymentMethod.CREDIT_CARD
+    assert isinstance(payment.timestamp, datetime)
+    assert payment.status == "pending"
+
+def test_payment_processing():
+    """
+    Test payment processing
+    """
+    payment = Payment(50.0, PaymentMethod.DEBIT_CARD)
+    assert payment.status == "pending"
+    assert payment.process() == True
+    assert payment.status == "completed"
+
+def test_payment_with_different_methods():
+    """
+    Test payment with different payment methods
+    """
+    methods = [
+        PaymentMethod.CREDIT_CARD,
+        PaymentMethod.DEBIT_CARD,
+        PaymentMethod.UPI,
+        PaymentMethod.NET_BANKING,
+        PaymentMethod.PAYPAL
+    ]
+    
+    for method in methods:
+        payment = Payment(75.0, method)
+        assert payment.method == method
+        assert payment.status == "pending"
+        assert payment.process() == True
+        assert payment.status == "completed"
