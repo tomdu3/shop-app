@@ -389,3 +389,40 @@ class Cart:
         Clears the cart by removing all items.
         """
         self.items.clear()
+
+
+class PaymentMethod(Enum):
+    """
+    PaymentMethod enum class.
+    """
+    CREDIT_CARD = "Credit Card"
+    DEBIT_CARD = "Debit Card"
+    UPI = "UPI"
+    NET_BANKING = "Net Banking"
+    PAYPAL = "PayPal"
+
+
+class Payment:
+    def __init__(self, amount: float, method: PaymentMethod):
+        """
+        Payment class.
+
+        Attributes:
+            amount (float): The amount to be paid.
+            method (PaymentMethod): The payment method to be used.
+            timestamp (datetime): The timestamp of the payment.
+            status (str): The status of the payment.
+        
+        Methods:
+            process() -> bool: Simulates the payment process.
+        """
+        self.amount = amount
+        self.method = method
+        self.timestamp = datetime.now()
+        self.status = "pending"
+
+    def process(self) -> bool:
+        # Simulate payment processing
+        self.status = "completed"
+        return True
+
