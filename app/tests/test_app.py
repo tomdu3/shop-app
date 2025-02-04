@@ -6,6 +6,8 @@ from ..app import (
     Category,
     Product,
     ProductManager,
+    CartItem,
+    Cart,
 )
 
 # Test data
@@ -156,3 +158,56 @@ def test_product_manager():
     # remove category with all products removed
     category = product_manager.remove_category(1) 
     assert category is True  # category removed if True
+
+# Test CartItem and Cart classes
+
+def test_cart():
+    """
+    Test CartItem and Cart classes
+    """
+    cart = Cart()
+    # add item
+    category = Category(5, "Electronics")
+    product = Product(1, "Laptop", 5, 999.99)
+    cart.add_item(product, 2)
+    assert cart.items[product.id].quantity == 2
+    assert cart.get_total() == 1999.98
+    cart.remove_item(product.id)
+    assert product.id not in cart.items
+    # add multiple items
+    product2 = Product(2, "Phone", 5, 499.99)
+    product3 = Product(3, "Tablet", 5, 299.99)
+    cart.add_item(product, 2)
+    cart.add_item(product2, 1)
+    cart.add_item(product3, 3)
+    assert cart.items[product.id].quantity == 2
+    assert cart.items[product2.id].quantity == 1
+    assert cart.items[product3.id].quantity == 3
+    assert cart.get_total() == 3399.94
+    # remove item
+    cart.remove_item(product.id)
+    assert product.id not in cart.items
+    assert cart.get_total() == 1399.96
+
+    # clear cart
+    cart.clear()
+    assert cart.items == {}
+    assert cart.get_total() == 0
+
+    # update quantity
+    cart.add_item(product, 2)
+    assert cart.items[product.id].quantity == 2
+    cart.update_item(product.id, 3)
+    assert cart.items[product.id].quantity == 3
+
+    # update quantity to 0
+    cart.update_item(product.id, 0)
+    assert product.id not in cart.items
+
+    # update quantity to negative
+    cart.add_item(product, 2)
+    with pytest.raises(ValueError) as context:
+        cart.update_item(product.id, -1)
+
+    # Optional: Check the error message
+    assert str(context.value) == "Quantity must not be negative"
