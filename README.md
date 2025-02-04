@@ -1,281 +1,216 @@
 # Shopping App Project
 
-[Python] - Shopping App Using Python
+A comprehensive Python-based shopping application implementing a dual-role system with separate functionalities for users and administrators.
 
 ## Table of Contents
+- [Technologies Used](#technologies-used)
+- [System Architecture](#system-architecture)
+- [Features](#features)
+- [Data Models](#data-models)
+- [Access Control](#access-control)
+- [Implementation Details](#implementation-details)
+- [User Interface](#user-interface)
 
-- [Overview](#overview)
-- [Detailed Implementation Plan](#detailed-implementation-plan)
-- [Implementation Steps](#implementation-steps)
-- [Access Control Requirements](#access-control-requirements)
-- [Technical Requirements](#technical-requirements)
+## Technologies Used
 
-## Overview
+### Core Libraries
+- **uuid**: Generates unique identifiers for sessions and transactions
+- **datetime**: Handles timestamp creation for sessions and transactions
+- **enum**: Implements type-safe enumerations for:
+  - User Types (Admin/User)
+  - Payment Methods
+- **typing**: Provides type hints through:
+  - Dict: For type-safe collections
+  - List: For array-type annotations
+  - Optional: For nullable values
 
-### Project Scope
-
-A backend Python shopping application featuring:
-
-- Dual login system (User/Admin)
-- Product categories management
-- Shopping cart functionality
-- Payment options
-- No frontend or database requirements
-
-### Key Features
-
-- User and Admin authentication
-- Product catalog management
-- Shopping cart functionality
-- Multiple payment options
-- Category management
-- Access control system
-
-## Detailed Implementation Plan
-
-### 1. Basic Structure Setup
-
-1. Create main application file
-2. Set up necessary Python classes:
-   - User
-   - Admin
-   - Product
-   - Category
-   - Cart
-   - Payment
-
-### 2. Core Features Implementation
-
-#### A. Authentication System
-
-1. Create demo databases:
-
-   - User credentials store
-   - Admin credentials store
-   - Session management system
-
-2. Implement login functions:
-   - User login verification
-   - Admin login verification
+### Purpose of Each Library
+1. **uuid Library**
    - Session ID generation
+   - Transaction tracking
+   - Unique identifier creation for cart items
 
-#### B. Product Management
+2. **datetime Library**
+   - Session timestamp management
+   - Transaction logging
+   - Order tracking
 
-1. Create product catalog structure:
-   - Product ID
-   - Name
-   - Category ID
-   - Price
-2. Implement initial categories:
-   - Footwear
-   - Clothing
-   - Electronics
-   - Accessories
+3. **enum Library**
+   - User role definition (UserType.admin, UserType.user)
+   - Payment method categorization:
+     - UPI
+     - Debit Card
+     - Net Banking
+     - PayPal
 
-#### C. User Features
+4. **typing Library**
+   - Type safety for collections
+   - Better code documentation
+   - Enhanced IDE support
+   - Runtime type checking capabilities
 
-1. Cart Management:
+## System Architecture
 
-   - View cart
-   - Add items
-   - Remove items
-   - Update quantities
-
-2. Payment System:
-   - UPI
-   - Debit Card
-   - Net Banking
-   - PayPal
-
-#### D. Admin Features
-
-1. Product Management:
-
-   - Add new products
-   - Modify existing products
-   - Remove products
-
-2. Category Management:
-   - Add new categories
-   - Remove existing categories
-
-## Implementation Steps
-
-### Step 1: Basic Setup
-
-1. Create main.py
-2. Implement welcome message
-3. Set up class structures
-
-### Step 2: Authentication
-
-1. Create mock databases
-2. Implement login systems
-3. Add session management
-
-### Step 3: Product System
-
-1. Create product catalog
-2. Implement category system
-3. Add product viewing functionality
-
-### Step 4: User Features
-
-1. Implement cart system
-2. Add payment options
-3. Create checkout process
-
-### Step 5: Admin Features
-
-1. Add product management
-2. Implement category management
-3. Set up access restrictions
-
-## Access Control Requirements
-
-### User Permissions
-
-| Feature            | Access |
-| ------------------ | ------ |
-| View Products      | ✅     |
-| Manage Cart        | ✅     |
-| Make Purchases     | ✅     |
-| View Order History | ✅     |
-| Manage Products    | ❌     |
-| Manage Categories  | ❌     |
-
-### Admin Permissions
-
-| Feature           | Access |
-| ----------------- | ------ |
-| View Products     | ✅     |
-| Manage Cart       | ❌     |
-| Make Purchases    | ❌     |
-| Manage Products   | ✅     |
-| Manage Categories | ✅     |
-| View System Stats | ✅     |
-
-## Technical Requirements
-
-### System Architecture
-
-```
+### Core Components
 Shopping App
-├── Authentication
-│ ├── User Login
-│ └── Admin Login
-├── Product Management
-│ ├── Categories
-│ └── Products
-├── User Features
-│ ├── Cart
-│ └── Payments
-└── Admin Features
-├── Product Management
-└── Category Management
-```
+├── Authentication System
+│   ├── User Management
+│   ├── Session Handling
+│   └── Privilege Control
+├── Product System
+│   ├── Category Management
+│   └── Product Management
+├── Shopping System
+│   ├── Cart Management
+│   └── Checkout Process
+└── Payment System
+    └── Multiple Payment Methods
 
-### Data Structures
+## Features
 
-1. User
+### Authentication System
+- Secure login mechanism
+- Session-based authentication
+- Role-based access control
+- Automatic privilege verification
 
-```json
-   {
-      "user_id": string,
-      "username": string,
-      "password": string,
-      "cart": Cart
-   }
-```
+### Product Management
+- Complete CRUD operations for products
+- Category-based organization
+- Inventory tracking
+- Price management
 
-2. Product
+### Shopping Features
+1. Cart Management
+   - Add products with quantity
+   - Remove products
+   - View cart contents
+   - Calculate totals
 
-```json
-   {
-      "product_id": string,
-      "name": string,
-      "category_id": string,
-      "price": float
-   }
-```
-
-3. Category
-
-```json
-   {
-      "category_id": string,
-      "name": string,
-      "description": string
-   }
-```
-
-### Sample Categories
-
-| Category ID | Name        | Description                      |
-| ----------- | ----------- | -------------------------------- |
-| CAT001      | Footwear    | Shoes, boots, and sandals        |
-| CAT002      | Clothing    | Shirts, pants, and jackets       |
-| CAT003      | Electronics | Phones, laptops, and accessories |
-| CAT004      | Accessories | Watches, bags, and jewelry       |
-
-### Payment Options
-
-1. UPI
-
-   - Verification process
-   - Payment confirmation
-   - Transaction ID generation
-
-2. Debit Card
-
-   - Card validation
-   - Payment processing
-   - Security checks
-
-3. Net Banking
-   - Bank selection
-   - Account verification
+2. Checkout System
+   - Multiple payment methods
    - Transaction processing
+   - Cart clearing post-purchase
 
-### Error Handling
+## Data Models
 
-| Error Type          | Response                                             |
-| ------------------- | ---------------------------------------------------- |
-| Invalid Login       | "Invalid credentials. Please try again."             |
-| Unauthorized Access | "You don't have permission to perform this action."  |
-| Cart Error          | "Unable to update cart. Please try again."           |
-| Payment Failure     | "Payment process failed. Please try another method." |
+### User Model
+class User:
+    username: str
+    password: str
+    type: UserType
+    session_id: Optional[str]
+
+### Product Model
+class Product:
+    id: int
+    name: str
+    category_id: int
+    price: float
+
+### Category Model
+class Category:
+    id: int
+    name: str
+
+### Cart Model
+class Cart:
+    items: Dict[int, CartItem]
+    user_id: str
+
+## Access Control
+
+### User Permissions Matrix
+
+| Feature               | User | Admin |
+|----------------------|------|-------|
+| View Products        | ✅   | ✅    |
+| Add to Cart          | ✅   | ❌    |
+| Checkout             | ✅   | ❌    |
+| Manage Products      | ❌   | ✅    |
+| Manage Categories    | ❌   | ✅    |
+
+## Implementation Details
 
 ### Session Management
+- Unique session IDs using UUID
+- Session validation before operations
+- Automatic session clearing on logout
 
-1. Session Creation
+### Cart Implementation
+- Per-user cart storage
+- Real-time total calculation
+- Quantity management
+- Product validation
 
-   - Generate unique session ID
-   - Store user/admin information
-   - Set session timeout
+### Payment Processing
+1. Payment Method Selection
+2. Transaction Initialization
+3. Payment Validation
+4. Order Completion
 
-2. Session Validation
-   - Check session validity
-   - Verify user permissions
-   - Handle session expiration
+## User Interface
 
-### Testing Requirements
+### Main Menu
+1. Login
+2. Exit
 
-1. Unit Tests
+### Admin Menu
+1. View Products
+2. Add Product
+3. Update Product
+4. Remove Product
+5. View Categories
+6. Add Category
+7. Remove Category
+8. Logout
 
-   - Authentication
-   - Cart operations
-   - Payment processing
-   - Admin functions
+### User Menu
+1. View Products
+2. Add to Cart
+3. Remove from Cart
+4. View Cart
+5. Checkout
+6. Logout
 
-2. Integration Tests
+### Input Validation
+- Numeric input verification
+- Product existence checking
+- Category validation
+- Quantity validation
 
-   - User workflow
-   - Admin workflow
-   - Payment flow
-   - Error handling
+### Error Handling
+- Invalid input management
+- Privilege violation alerts
+- Transaction failure handling
+- Session expiration management
 
-3. System Tests
-   - Performance
-   - Security
-   - Reliability
+## Security Features
+
+1. **Access Control**
+   - Role-based permissions
+   - Session validation
+   - Operation authorization
+
+2. **Data Validation**
+   - Input sanitization
+   - Type checking
+   - Boundary validation
+
+3. **Session Security**
+   - Unique session IDs
+   - Session timeout
+   - Secure logout process
+
+## Current Limitations and Future Improvements
+
+### Limitations
+- In-memory data storage
+- Single session per user
+- Basic authentication
+
+### Planned Improvements
+- Persistent data storage
+- Enhanced security features
+- Multiple session support
+- Transaction history
