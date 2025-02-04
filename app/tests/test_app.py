@@ -3,14 +3,15 @@ from datetime import datetime
 from ..app import (
     UserType,
     User,
-    UserManager,
+    # UserManager,
     Category,
     Product,
-    ProductManager,
+    # ProductManager,
     CartItem,  # NOQA
     Cart,
     PaymentMethod,
     Payment,
+    ShoppingApp
 )
 
 # Test data
@@ -74,42 +75,42 @@ def test_admin_methods(admin_user):
     assert admin_user.session_id is not None
 
 # Test data
-NEW_USER = "new_user"
-NEW_PASSWORD = "new_password"
-ADMIN_USER = "admin_user" 
-ADMIN_PASSWORD = "admin_password"
-REGULAR_USER = "user"
-REGULAR_PASSWORD = "pass123"
+# NEW_USER = "new_user"
+# NEW_PASSWORD = "new_password"
+# ADMIN_USER = "admin_user" 
+# ADMIN_PASSWORD = "admin_password"
+# REGULAR_USER = "user"
+# REGULAR_PASSWORD = "pass123"
 
-@pytest.fixture
-def user_manager():
-    return UserManager()
+# @pytest.fixture
+# def user_manager():
+#     return UserManager()
 
-def test_register_and_login_new_user(user_manager):
-    """
-    Test registering and logging in a new regular user
-    """
-    assert user_manager.register(NEW_USER, NEW_PASSWORD, UserType.user)
-    assert user_manager.login(REGULAR_USER, REGULAR_PASSWORD)
-    assert user_manager.current_user.is_authenticated()
-    assert user_manager.current_user.username == REGULAR_USER
-    assert user_manager.current_user.user_type == UserType.user
-    assert user_manager.current_user.is_admin() == False
-    user_manager.logout()
-    assert user_manager.current_user == None
+# def test_register_and_login_new_user(user_manager):
+#     """
+#     Test registering and logging in a new regular user
+#     """
+#     assert user_manager.register(NEW_USER, NEW_PASSWORD, UserType.user)
+#     assert user_manager.login(REGULAR_USER, REGULAR_PASSWORD)
+#     assert user_manager.current_user.is_authenticated()
+#     assert user_manager.current_user.username == REGULAR_USER
+#     assert user_manager.current_user.user_type == UserType.user
+#     assert user_manager.current_user.is_admin() == False
+#     user_manager.logout()
+#     assert user_manager.current_user == None
 
-def test_register_and_login_admin_user(user_manager):
-    """
-    Test registering and logging in a new admin user
-    """
-    assert user_manager.register(ADMIN_USER, ADMIN_PASSWORD, UserType.admin)
-    assert user_manager.login(ADMIN_USER, ADMIN_PASSWORD)
-    assert user_manager.current_user.is_authenticated()
-    assert user_manager.current_user.username == ADMIN_USER
-    assert user_manager.current_user.user_type == UserType.admin
-    assert user_manager.current_user.is_admin()
-    user_manager.logout()
-    assert user_manager.current_user == None
+# def test_register_and_login_admin_user(user_manager):
+#     """
+#     Test registering and logging in a new admin user
+#     """
+#     assert user_manager.register(ADMIN_USER, ADMIN_PASSWORD, UserType.admin)
+#     assert user_manager.login(ADMIN_USER, ADMIN_PASSWORD)
+#     assert user_manager.current_user.is_authenticated()
+#     assert user_manager.current_user.username == ADMIN_USER
+#     assert user_manager.current_user.user_type == UserType.admin
+#     assert user_manager.current_user.is_admin()
+#     user_manager.logout()
+#     assert user_manager.current_user == None
 
 # Test Category and Product classes
 def test_category_and_product():
@@ -123,44 +124,44 @@ def test_category_and_product():
     assert product.category_id == category.id
 
 
-# Test ProductManager class and methods
+# # Test ProductManager class and methods
 
-def test_product_manager():
-    """
-    Test ProductManager class and its methods
-    """
-    # add product
-    product_manager = ProductManager()
-    category = product_manager.add_category("Electronics")
-    product = product_manager.add_product("Laptop", category.id, 999.99)
-    assert product.name == "Laptop"
-    assert product.price == 999.99
-    assert product.category_id == category.id
+# def test_product_manager():
+#     """
+#     Test ProductManager class and its methods
+#     """
+#     # add product
+#     product_manager = ProductManager()
+#     category = product_manager.add_category("Electronics")
+#     product = product_manager.add_product("Laptop", category.id, 999.99)
+#     assert product.name == "Laptop"
+#     assert product.price == 999.99
+#     assert product.category_id == category.id
     
-    # update product
-    product_manager.update_product(product.id, name="Updated Laptop", price=999.99)
-    product = product_manager.products[product.id]
-    assert product.name == "Updated Laptop"
-    assert product.price == 999.99
-    assert product.category_id == category.id
+#     # update product
+#     product_manager.update_product(product.id, name="Updated Laptop", price=999.99)
+#     product = product_manager.products[product.id]
+#     assert product.name == "Updated Laptop"
+#     assert product.price == 999.99
+#     assert product.category_id == category.id
 
-    # remove product
-    product_manager.remove_product(product.id)
-    assert product.id not in product_manager.products
-    # remove category
-    product_manager.remove_category(category.id)
-    assert category.id not in product_manager.categories
+#     # remove product
+#     product_manager.remove_product(product.id)
+#     assert product.id not in product_manager.products
+#     # remove category
+#     product_manager.remove_category(category.id)
+#     assert category.id not in product_manager.categories
 
-    # remove category that is in use
-    category = product_manager.remove_category(1)  # remove Shoes
-    assert category is False  # category is in use if False
+#     # remove category that is in use
+#     category = product_manager.remove_category(1)  # remove Shoes
+#     assert category is False  # category is in use if False
 
-    # remove product that is in use
-    product = product_manager.remove_product(1)  # remove Shoes
-    assert product is True  # product removed if True
-    # remove category with all products removed
-    category = product_manager.remove_category(1) 
-    assert category is True  # category removed if True
+#     # remove product that is in use
+#     product = product_manager.remove_product(1)  # remove Shoes
+#     assert product is True  # product removed if True
+#     # remove category with all products removed
+#     category = product_manager.remove_category(1) 
+#     assert category is True  # category removed if True
 
 # Test CartItem and Cart classes
 
@@ -264,3 +265,102 @@ def test_payment_with_different_methods():
         assert payment.status == "pending"
         assert payment.process() == True
         assert payment.status == "completed"
+
+# Test ShoppingApp
+
+@pytest.fixture
+def shopping_app():
+    return ShoppingApp()
+
+def test_shopping_app_initialization(shopping_app):
+    """Test initial state of shopping app"""
+    assert len(shopping_app.categories) == 4
+    assert len(shopping_app.products) == 3
+    assert len(shopping_app.users) == 2
+    assert len(shopping_app.carts) == 0
+    assert shopping_app.current_user is None
+
+def test_login_logout(shopping_app):
+    """Test login and logout functionality"""
+    # Test successful login
+    assert shopping_app.login("user1", "pass123")
+    assert shopping_app.current_user is not None
+    assert shopping_app.current_user.username == "user1"
+    
+    # Test failed login
+    assert not shopping_app.login("user1", "wrongpass")
+    
+    # Test logout
+    shopping_app.logout()
+    assert shopping_app.current_user is None
+
+def test_get_cart(shopping_app):
+    """Test cart retrieval"""
+    # Without login
+    assert shopping_app.get_cart() is None
+    
+    # With login
+    shopping_app.login("user1", "pass123")
+    cart = shopping_app.get_cart()
+    assert cart is not None
+    assert isinstance(cart, Cart)
+    assert shopping_app.current_user.session_id in shopping_app.carts
+
+def test_add_product(shopping_app):
+    """Test adding products"""
+    # Try adding product without admin rights
+    shopping_app.login("user1", "pass123")
+    with pytest.raises(ValueError) as e:
+        shopping_app.add_product("Test Product", 1, 99.99)
+    assert str(e.value) == "Admin privileges required"
+    
+    # Try adding product with invalid category
+    shopping_app.login("admin", "admin123")
+    with pytest.raises(ValueError) as e:
+        shopping_app.add_product("Test Product", 999, 99.99)
+    assert str(e.value) == "Invalid category ID"
+    
+    # Successfully add product
+    product = shopping_app.add_product("Test Product", 1, 99.99)
+    assert product is not None
+    assert product.name == "Test Product"
+    assert product.category_id == 1
+    assert product.price == 99.99
+    assert product.id == 4  # Since there were 3 products initially
+
+def test_remove_product(shopping_app):
+    """Test removing products"""
+    # Try removing product without admin rights
+    shopping_app.login("user1", "pass123")
+    with pytest.raises(ValueError) as e:
+        shopping_app.remove_product(1)
+    assert str(e.value) == "Admin privileges required"
+    
+    # Successfully remove product
+    shopping_app.login("admin", "admin123")
+    assert shopping_app.remove_product(1)
+    assert 1 not in shopping_app.products
+    
+    # Try removing non-existent product
+    assert not shopping_app.remove_product(999)
+
+def test_add_to_cart(shopping_app):
+    """Test adding items to cart"""
+    # Try adding to cart without login
+    with pytest.raises(ValueError) as e:
+        shopping_app.add_to_cart(1, 1)
+    assert str(e.value) == "User privileges required"
+    
+    # Login and add valid item
+    shopping_app.login("user1", "pass123")
+    assert shopping_app.add_to_cart(2, 1)
+    cart = shopping_app.get_cart()
+    assert cart.items[2].quantity == 1
+    
+    # Try adding invalid product
+    assert not shopping_app.add_to_cart(999, 1)
+    
+    # Try adding negative quantity
+    with pytest.raises(ValueError) as e:
+        shopping_app.add_to_cart(2, -1)
+    assert str(e.value) == "Quantity must be greater than 0"
