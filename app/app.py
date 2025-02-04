@@ -424,7 +424,31 @@ class Payment:
 
 
 class ShoppingApp:
+    """
+    ShoppingApp class.
+
+    Attributes:
+        categories (Dict[int, Category]): A dictionary of categories. Empty at initialization.
+        products (Dict[int, Product]): A dictionary of products. Empty at initialization.
+        users (Dict[str, User]): A dictionary of users. Empty at initialization.
+        carts (Dict[str, Cart]): A dictionary of carts. Empty at initialization.
+        current_user (User): The current user. None at initialization.
+        next_product_id (int): The next ID to be assigned to a new product. 5 at initialization.
+        next_category_id (int): The next ID to be assigned to a new category. 5 at initialization.
+        payments (List[Payment]): A list of payments. Empty at initialization.
+
+    Methods:
+        login(username, password) -> bool: Logs in the user with the provided username and password.
+        logout(): Logs out the current user.
+        check_user_privileges() -> bool: Checks if the current user has user privileges.
+        check_admin_privileges() -> bool: Checks if the current user has admin privileges.
+        add_to_cart(product_id, quantity) -> bool: Adds a product to the cart with the provided product_id and quantity.
+        remove_from_cart(product_id) -> bool: Removes a product from the cart with the provided product_id.
+        checkout() -> bool: Simulates the checkout process by processing the payment and clearing the cart.
+    """
+
     def __init__(self):
+        # DB simulated data
         self.categories: Dict[int, Category] = {
             1: Category(1, "Boots"),
             2: Category(2, "Coats"),
@@ -449,6 +473,7 @@ class ShoppingApp:
         self.next_category_id = 5
 
     def login(self, username: str, password: str) -> bool:
+        # Simulate login
         if username in self.users and self.users[username].login(password):
             self.current_user = self.users[username]
             if not self.current_user.is_admin():
@@ -457,11 +482,13 @@ class ShoppingApp:
         return False
 
     def logout(self):
+        # Simulate logout
         if self.current_user:
             self.current_user.logout()
             self.current_user = None
 
     def check_user_privileges(self) -> bool:
+        # Check if the current user has user privileges
         if not self.current_user:
             print("Please log in first.")
             return False
@@ -471,6 +498,7 @@ class ShoppingApp:
         return True
 
     def check_admin_privileges(self) -> bool:
+        # Check if the current user has admin privileges
         if not self.current_user:
             print("Please log in first.")
             return False
@@ -480,6 +508,7 @@ class ShoppingApp:
         return True
 
     def add_to_cart(self, product_id: int, quantity: int) -> bool:
+        # Simulate adding product to cart
         if not self.check_user_privileges():
             return False
         if product_id not in self.products:
@@ -495,6 +524,7 @@ class ShoppingApp:
             return False
 
     def remove_from_cart(self, product_id: int) -> bool:
+        # Simulate removing product from cart
         if not self.check_user_privileges():
             return False
         cart = self.carts[self.current_user.session_id]
@@ -507,6 +537,7 @@ class ShoppingApp:
             return False
 
     def add_product(self, name: str, category_id: int, price: float) -> bool:
+        # Simulate adding product
         if not self.check_admin_privileges():
             return False
         if category_id not in self.categories:
@@ -518,6 +549,7 @@ class ShoppingApp:
         return True
 
     def update_product(self, product_id: int, name: str, category_id: int, price: float) -> bool:
+        # Simulate updating product
         if not self.check_admin_privileges():
             return False
         if product_id not in self.products:
@@ -531,6 +563,7 @@ class ShoppingApp:
         return True
 
     def remove_product(self, product_id: int) -> bool:
+        # Simulate removing product
         if not self.check_admin_privileges():
             return False
         if product_id not in self.products:
@@ -541,6 +574,7 @@ class ShoppingApp:
         return True
 
     def add_category(self, name: str) -> bool:
+        # Simulate adding category
         if not self.check_admin_privileges():
             return False
         self.categories[self.next_category_id] = Category(self.next_category_id, name)
@@ -549,6 +583,7 @@ class ShoppingApp:
         return True
 
     def remove_category(self, category_id: int) -> bool:
+        # Simulate removing category
         if not self.check_admin_privileges():
             return False
         if category_id not in self.categories:
@@ -564,6 +599,7 @@ class ShoppingApp:
         return True
 
     def display_catalog(self):
+        # Simulate displaying catalog
         print("\nProduct Catalog:")
         print("-" * 60)
         print(f"{'ID':<5} {'Name':<20} {'Category':<15} {'Price':<10}")
@@ -573,6 +609,7 @@ class ShoppingApp:
             print(f"{pid:<5} {product.name:<20} {category:<15} ${product.price:<10.2f}")
 
     def display_categories(self):
+        # Simulate displaying categories
         print("\nCategories:")
         print("-" * 30)
         print(f"{'ID':<5} {'Name':<20}")
@@ -581,6 +618,7 @@ class ShoppingApp:
             print(f"{cid:<5} {category.name:<20}")
 
     def checkout(self, payment_method: PaymentMethod) -> bool:
+        # Simulate checkout
         if not self.check_user_privileges():
             return False
         cart = self.carts[self.current_user.session_id]
@@ -597,12 +635,13 @@ class ShoppingApp:
         return False
     
     def get_cart(self) -> Optional[Cart]:
+        # Simulate getting cart
         if not self.current_user or not self.current_user.session_id:
             return None
         return self.carts.get(self.current_user.session_id)
 
-    # Alternative for the remove_from_cart section in main():
     def remove_from_cart(self, product_id: int) -> bool:
+        # Simulate removing product from cart
         if not self.check_user_privileges():
             return False
         
@@ -619,13 +658,17 @@ class ShoppingApp:
             print(f"Error: {e}")
             return False
 
+
 def main():
+    # Create an instance of the ShoppingApp
     shop = ShoppingApp()
     
-    print("=" * 50)
+    # Welcome message
+    print("=" * 50)  
     print("Welcome to the Demo Marketplace!")
     print("=" * 50)
-
+    
+    # Main loop - User Menu
     while True:
         print("\n1. Login")
         print("2. Exit")
@@ -759,6 +802,7 @@ def main():
             break
         else:
             print("Invalid choice.")
+
 
 if __name__ == "__main__":
     main()
